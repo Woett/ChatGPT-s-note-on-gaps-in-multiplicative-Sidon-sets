@@ -1,0 +1,1082 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,amsfonts,mathtools}
+\usepackage{xcolor}
+%\usepackage{microtype}
+\usepackage[colorlinks=true,linkcolor=blue!70!black,citecolor=blue!70!black,urlcolor=blue!70!black]{hyperref}
+
+\numberwithin{equation}{section}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}[theorem]{Problem}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\newcommand{\pp}{\mathcal P}
+\newcommand{\bb}{\mathcal B}
+\newcommand{\cc}{\mathcal C}
+\DeclareMathOperator{\supp}{supp}
+
+\begin{document}
+
+\title[An upper bound for gaps in multiplicative Sidon sets]
+{A note on the bound $g(n)\ll_\varepsilon n^{10/33+\varepsilon}$}
+
+\author{ChatGPT}
+\date{}
+
+\begin{abstract}
+For a positive integer \(n\), let \(g(n)\) denote the least scale on which a
+multiplicative Sidon subset of \([n]\) can be made to meet every interval.
+Using the currently available exceptional-set estimate for the prime number
+theorem in short intervals due to Gafni and Tao, we prove
+\[
+        g(n) \ll n^{10/33+o(1)}.
+\]
+The proof uses primes to cover the prime-rich blocks and then applies a local
+lemma argument to fill the remaining prime-poor blocks.  Under the Riemann
+hypothesis, the same method gives
+\[
+        g(n)\ll n^{1/4+o(1)}.
+\]
+\end{abstract}
+
+\maketitle
+
+\section{Introduction and external input}
+
+Throughout the paper, we write $\N:=\{1,2,3,\dots\}$. A set $A\subseteq\N$ is
+called a \emph{multiplicative Sidon set} if all products $aa'$ with $a,a'\in A$
+and $a\le a'$ are distinct.
+
+Multiplicative Sidon sets have been studied since the work of
+Erd\H{o}s~\cite{Erdos1938,Erdos1968}.  In particular, the maximum size of a
+multiplicative Sidon subset of \([n]:=\{1,\dots,n\}\) is
+\[
+        \pi(n)+\Theta\!\left(\frac{n^{3/4}}{(\log n)^{3/2}}\right).
+\]
+Thus the extremal theory of multiplicative Sidon sets is quite well understood
+from the point of view of cardinality.  The corresponding spacing problem,
+however, is much less developed.
+
+In his 2001 list of unsolved problems,
+S\'ark\"ozy~\cite[Problem~34]{Sarkozy2001} asked the following problem.
+
+\begin{problem}[S\'ark\"ozy~\cite{Sarkozy2001}]\label{prob:34}
+How small can one make the maximal gap between the consecutive elements of a
+multiplicative Sidon set selected from $\{1,2,\dots,n\}$? Does there exist for
+all $n$ a multiplicative Sidon set $A\subseteq\{1,2,\dots,n\}$ so that
+$A\cap [m,m+\sqrt n]\neq\varnothing$ for all $1\le m<m+\sqrt n\le n$?
+\end{problem}
+
+S\'ark\"ozy observed that a positive answer to the second question would follow,
+for example, from a prime-gap estimate of the shape
+\(p_{i+1}-p_i=o(p_i^{1/2})\).  Such a bound is far beyond what is currently
+known.
+
+To encode Problem~\ref{prob:34} quantitatively, we use the following function.
+
+\begin{definition}
+For $n\in\N$, define $g(n)$ to be the infimum of all real numbers $L\ge 0$
+such that there exists a multiplicative Sidon set
+\(A\subseteq[n]:=\{1,2,\dots,n\}\) with the property that
+\[
+        A\cap[x,x+L]\neq\varnothing
+        \qquad\text{for every }x\in\mathbb R
+        \text{ with }[x,x+L]\subseteq[1,n].
+\]
+\end{definition}
+
+A natural upper-bound benchmark is provided by the primes: since the set of
+primes is multiplicatively Sidon, any result on primes in short intervals gives
+an upper bound for \(g(n)\).  For example, the theorem of Baker, Harman and
+Pintz~\cite{BakerHarmanPintz2001} implies
+\[
+        g(n)\ll n^{21/40}.
+\]
+In the opposite direction, the cardinality bound above, together with the prime
+number theorem and the pigeonhole principle, gives
+\[
+        g(n)\ge (1+o(1))\log n .
+\]
+
+Recently, van Doorn, Monticone and Tang~\cite{DMT2026} gave an affirmative
+answer to S\'ark\"ozy's explicit \(\sqrt n\)-question and proved the
+power-saving bound
+\[
+        g(n)\ll_\varepsilon n^{\rho+\varepsilon},
+        \qquad
+        \rho:=\frac{13-\sqrt{69}}{10}<0.47 .
+\]
+The purpose of the present note is to show that the exceptional-set estimates
+for primes in short intervals due to Gafni and Tao lead to the stronger bound
+\[
+        g(n)\ll_\varepsilon n^{10/33+\varepsilon}.
+\]
+
+
+
+We shall use the following consequence of the work of Gafni and Tao on the
+exceptional set in the prime number theorem in short intervals.
+
+\begin{theorem}[Gafni--Tao, consequence of the exceptional-set bound]
+\label{thm:GT-input}
+Let \(10/33<\theta<1\). For every $\eta>0$ and all sufficiently large $X$,
+\[
+\left|\left\{x\in[X,2X]:
+\left|\sum_{x<m\le x+x^\theta}\Lambda(m)-x^\theta\right|
+        \ge \frac12 x^\theta\right\}\right|
+        \ll_{\theta,\eta} X^{10/11+\eta},
+\]
+where $|\cdot|$ denotes Lebesgue measure.
+\end{theorem}
+
+\begin{remark}[Verification of Theorem~\ref{thm:GT-input}]
+We spell out the finite calculation needed from Gafni--Tao.  Let
+\[
+        \theta_0:=\frac{10}{33},
+        \qquad
+        c_0:=\frac{1}{1-\theta_0}=\frac{33}{23}.
+\]
+Gafni--Tao prove that, for every fixed \(0<\theta<1\),
+\[
+\mu(\theta)\le
+\inf_{\xi>0}\ 
+\sup_{\substack{0\le \sigma<1\\
+        A(\sigma)\ge (1-\theta)^{-1}-\xi}}
+\left((1-\theta)(1-\sigma)A(\sigma)+2\sigma-1\right).
+\]
+Let \(\widetilde A(\sigma)\) be the piecewise upper bound for \(A(\sigma)\)
+given in Table~1 of Gafni--Tao, together with
+\[
+        \widetilde A(\sigma)=\frac{1}{1-\sigma}
+        \qquad (0\le \sigma\le 1/2).
+\]
+Set
+\[
+        F(\sigma):=
+        \frac{23}{33}(1-\sigma)\widetilde A(\sigma)+2\sigma-1.
+\]
+It suffices to verify that
+\[
+        F(\sigma)\le \frac{10}{11}
+        \qquad
+        \text{whenever }\widetilde A(\sigma)\ge \frac{33}{23}.
+\]
+The condition \(\widetilde A(\sigma)\ge 33/23\) restricts the last relevant
+Table~1 entry
+\[
+        \widetilde A(\sigma)=\frac{3}{10\sigma-7}
+        \qquad
+        \left(\frac9{10}<\sigma\le \frac{31}{34}\right)
+\]
+to \(\sigma\le 10/11\).  No later Table~1 entry contributes.  Taking closures
+of the relevant ranges, which can only enlarge the suprema, direct
+differentiation of the corresponding rational functions gives the following
+finite check:
+\[
+\begin{array}{c|c|c}
+\text{range of }\sigma
+&
+\widetilde A(\sigma)
+&
+\displaystyle \sup F(\sigma)
+\\ \hline
+\left[\dfrac{10}{33},\dfrac12\right]
+&
+\dfrac{1}{1-\sigma}
+&
+\dfrac{23}{33}
+\\[6pt]
+\left[\dfrac12,\dfrac{7}{10}\right]
+&
+\dfrac{3}{2-\sigma}
+&
+\dfrac{631}{715}
+\\[6pt]
+\left[\dfrac{7}{10},\dfrac{19}{25}\right]
+&
+\dfrac{15}{3+5\sigma}
+&
+\dfrac{4156}{4675}
+\\[6pt]
+\left[\dfrac{19}{25},\dfrac{127}{167}\right]
+&
+\dfrac{9}{8\sigma-2}
+&
+\dfrac{4156}{4675}
+\\[6pt]
+\left[\dfrac{127}{167},\dfrac{13}{17}\right]
+&
+\dfrac{15}{13\sigma-3}
+&
+\dfrac{1625}{1837}
+\\[6pt]
+\left[\dfrac{13}{17},\dfrac{17}{22}\right]
+&
+\dfrac{6}{5\sigma-1}
+&
+\dfrac{985}{1122}
+\\[6pt]
+\left[\dfrac{17}{22},\dfrac{41}{53}\right]
+&
+\dfrac{2}{9\sigma-6}
+&
+\dfrac{608}{693}
+\\[6pt]
+\left[\dfrac{41}{53},\dfrac79\right]
+&
+\dfrac{9}{7\sigma-1}
+&
+\dfrac{1721}{1980}
+\\[6pt]
+\left[\dfrac79,\dfrac{1867}{2347}\right]
+&
+\dfrac{9}{8(2\sigma-1)}
+&
+\dfrac{1721}{1980}
+\\[6pt]
+\left[\dfrac{1867}{2347},\dfrac78\right]
+&
+\dfrac{3}{2\sigma}
+&
+\dfrac{277}{308}
+\\[6pt]
+\left[\dfrac78,\dfrac{279}{314}\right]
+&
+\dfrac{3}{10\sigma-7}
+&
+\dfrac{920849}{1022384}
+\\[6pt]
+\left[\dfrac{279}{314},\dfrac9{10}\right]
+&
+\dfrac{24}{30\sigma-11}
+&
+\dfrac{199}{220}
+\\[6pt]
+\left[\dfrac9{10},\dfrac{10}{11}\right]
+&
+\dfrac{3}{10\sigma-7}
+&
+\dfrac{10}{11}.
+\end{array}
+\]
+Hence
+\[
+        F(\sigma)\le \frac{10}{11}
+        \qquad
+        \text{on the range }\widetilde A(\sigma)\ge \frac{33}{23}.
+\]
+
+Now fix \(\theta>10/33\), and put \(c_\theta=(1-\theta)^{-1}\).  Since
+\(c_\theta>c_0\), choose \(0<\xi<c_\theta-c_0\).  If
+\[
+        A(\sigma)\ge c_\theta-\xi,
+\]
+then
+\[
+        \widetilde A(\sigma)\ge A(\sigma)>c_0.
+\]
+Using \(A(\sigma)\le \widetilde A(\sigma)\) and
+\(1-\theta<1-\theta_0=23/33\), we obtain
+\[
+\begin{aligned}
+(1-\theta)(1-\sigma)A(\sigma)+2\sigma-1
+&\le
+\frac{23}{33}(1-\sigma)\widetilde A(\sigma)+2\sigma-1  \\
+&\le \frac{10}{11}.
+\end{aligned}
+\]
+Therefore the Gafni--Tao bound gives
+\[
+        \mu(\theta)\le \frac{10}{11}
+        \qquad
+        (\theta>10/33).
+\]
+Taking \(\delta=1/2\) in the definition of the exceptional-set exponent gives
+Theorem~\ref{thm:GT-input}.
+\end{remark}
+
+We shall also use the following conditional consequence of the same
+exceptional-set framework.
+
+\begin{theorem}
+\label{thm:GT-RH-input}
+Assume the Riemann hypothesis.  Let $0<\theta\le 1/2$.  For every $\eta>0$ and
+all sufficiently large $X$,
+\[
+\left|\left\{x\in[X,2X]:
+\left|\sum_{x<m\le x+x^\theta}\Lambda(m)-x^\theta\right|
+        \ge \frac12 x^\theta\right\}\right|
+        \ll_{\theta,\eta} X^{1-\theta+\eta},
+\]
+where $|\cdot|$ denotes Lebesgue measure.
+\end{theorem}
+
+We also use a standard elementary estimate for prime powers in very short
+intervals.
+
+\begin{lemma}[Prime powers are negligible below the square-root scale]
+\label{lem:prime-powers}
+Fix $0<\theta<1/2$.  Uniformly for $x\ge2$,
+\[
+        \sum_{\substack{x<m\le x+x^\theta\\ m=p^k,\ k\ge2}} \Lambda(m)
+        \ll_\theta (\log x)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+For a fixed $k\ge2$, the number of prime powers $p^k\in(x,x+x^\theta]$ is at
+most
+\[
+        (x+x^\theta)^{1/k}-x^{1/k}+1
+        \ll x^{\theta+1/k-1}+1.
+\]
+Summing over $2\le k\le \log_2(2x)$ gives
+\[
+        \ll x^{\theta-1/2}\log x+\log x\ll_\theta \log x
+\]
+prime powers.  Each contributes at most $O(\log x)$ to $\Lambda$, and the claim
+follows.
+\end{proof}
+
+\section{Two combinatorial lemmas}
+
+The first lemma is a convenient local-lemma form tailored to our selection
+problem.
+
+\begin{lemma}[A variable local lemma]
+\label{lem:variable-LLL}
+Let $X_1,\ldots,X_N$ be mutually independent random variables, and let
+$\mathcal E$ be a finite family of bad events.  Suppose that every
+$E\in\mathcal E$ is determined by at least one and at most $r$ of the variables,
+where $r\ge 1$.  For a variable $X_i$, write $i\in\supp(E)$ if $E$ depends on
+$X_i$.  If
+\[
+        \sum_{E\in\mathcal E:\ i\in\supp(E)} \mathbb P(E) \le \frac1{8r}
+        \qquad (1\le i\le N),
+\]
+then with positive probability none of the events in $\mathcal E$ occurs.
+\end{lemma}
+
+\begin{proof}
+We use the asymmetric Lov\'asz local lemma.  Put
+\[
+        x_E:=2\mathbb P(E) \qquad (E\in\mathcal E).
+\]
+Since every event has non-empty support, for any \(E\in\mathcal E\) and any
+\(i\in\supp(E)\) we have
+\[
+        \mathbb P(E)
+        \le
+        \sum_{F:\ i\in\supp(F)}\mathbb P(F)
+        \le \frac1{8r}.
+\]
+Thus \(0\le x_E\le 1/(4r)<1\).
+
+For the dependency graph, join two distinct events when they share at least one
+underlying variable.  For any fixed bad event \(E\),
+\[
+        \sum_{F\sim E} x_F
+        \le 2\sum_{i\in\supp(E)}
+              \sum_{F:\ i\in\supp(F)} \mathbb P(F)
+        \le 2r\cdot \frac1{8r}=\frac14.
+\]
+Therefore
+\[
+        \prod_{F\sim E}(1-x_F)
+        \ge 1-\sum_{F\sim E}x_F
+        \ge \frac34,
+\]
+and hence
+\[
+        x_E\prod_{F\sim E}(1-x_F)
+        \ge \frac32\mathbb P(E)
+        \ge \mathbb P(E).
+\]
+The asymmetric Lov\'asz local lemma now gives a positive probability of avoiding
+all bad events.
+\end{proof}
+The second lemma constructs a multiplicative Sidon transversal from a sparse
+family of blocks.
+
+\begin{lemma}[Sidon transversal for sparse blocks]
+\label{lem:sparse-transversal}
+Let \(H=H(n)\to\infty\), let \(\mathcal B\) be a family of pairwise disjoint
+intervals of integers contained in \([n]\), each of length \(H\), and put
+\(M:=|\mathcal B|\).  For each \(B\in\mathcal B\), let
+\(\mathcal C_B\subseteq B\) satisfy
+\[
+        |\mathcal C_B|\ge \gamma H
+\]
+for some fixed \(\gamma>0\).  Assume that there is a fixed \(\alpha>0\) such
+that
+\[
+        \frac{M n^\alpha}{H^2}=o(1),
+        \qquad
+        \frac{n^\alpha}{H^2}=o(1),
+        \qquad\text{and}\qquad
+        \frac{\sqrt n}{H^2}=o(1).
+\]
+Then there exist choices \(c_B\in\mathcal C_B\), one for each
+\(B\in\mathcal B\), such that
+\[
+        C:=\{c_B:B\in\mathcal B\}
+\]
+is a multiplicative Sidon set.
+\end{lemma}
+
+\begin{proof}
+Choose independently and uniformly
+\[
+        X_B\in\mathcal C_B \qquad (B\in\mathcal B).
+\]
+We shall avoid atomic bad events encoding non-trivial product coincidences.
+
+For distinct blocks \(B_1,B_2,B_3,B_4\) and values
+\(a_i\in\mathcal C_{B_i}\), include the atomic event
+\[
+        X_{B_i}=a_i \qquad (1\le i\le 4)
+\]
+whenever
+\[
+        a_1a_2=a_3a_4.
+\]
+For distinct blocks \(B_1,B_2,B_3\) and values
+\(a_i\in\mathcal C_{B_i}\), include the atomic event
+\[
+        X_{B_1}=a_1,\qquad X_{B_2}=a_2,\qquad X_{B_3}=a_3
+\]
+whenever either
+\[
+        a_1^2=a_2a_3
+        \qquad\text{or}\qquad
+        a_1a_2=a_3^2.
+\]
+Avoiding all these atomic events is sufficient.  Indeed, consider any equality
+\[
+        c_{B_1}c_{B_2}=c_{B_3}c_{B_4}
+\]
+among selected elements.  If a block index occurs on both sides, then
+cancelling the corresponding positive integer gives either the same unordered
+pair of block indices, or an equality between selected values from two distinct
+blocks; the latter is impossible since the blocks are disjoint.  We may
+therefore assume that no block index occurs on both sides.
+
+If the four block indices are distinct, the equality is excluded by one of the
+four-variable atoms.  If exactly one side has a repeated block index, the
+equality is excluded by one of the square-type atoms.  Finally, if both sides
+have repeated block indices, then the equality has the form
+\(c_B^2=c_{B'}^2\) with \(B\ne B'\), which again forces \(c_B=c_{B'}\) and is
+impossible because the blocks are disjoint.  Thus every non-trivial product
+coincidence is excluded.
+
+We estimate, for a fixed block \(B\in\mathcal B\), the total probability of all
+atomic bad events involving \(X_B\).  Let
+\[
+        U:=\bigcup_{B\in\mathcal B}\mathcal C_B,
+        \qquad |U|\le MH.
+\]
+We use the divisor bound in the form
+\[
+        \tau(m)\ll_\alpha m^{\alpha/2}\ll_\alpha n^\alpha
+        \qquad (m\le n^2).
+\]
+
+First consider four-variable atoms.  Up to an absolute factor accounting for the
+possible positions of \(X_B\), fix a value \(a\in\mathcal C_B\).  After choosing
+another value \(b\in U\), the number of ordered pairs \((c,d)\) with
+\(cd=ab\) is at most \(\tau(ab)\).  Since the blocks are disjoint, each value
+of \(U\) determines its block.  Hence the number of four-variable atoms
+involving \(X_B\) is
+\[
+        \ll \sum_{a\in\mathcal C_B}\sum_{b\in U}\tau(ab)
+        \ll_\alpha M H^2 n^\alpha .
+\]
+Each such atom has probability at most \((\gamma H)^{-4}\), so the total
+four-variable contribution is
+\[
+        \ll_{\gamma,\alpha} \frac{M n^\alpha}{H^2}=o(1).
+\]
+
+Next consider square-type atoms. The two estimates below account, up to an absolute factor, for all possible
+positions of the fixed variable \(X_B\) in a three-variable atom. For atoms of the shape \(a^2=bc\) with
+\(a\in\mathcal C_B\), the number of possible ordered pairs \((b,c)\) is at most
+\[
+        \tau(a^2)\ll_\alpha n^\alpha.
+\]
+Therefore the total contribution of these atoms is
+\[
+        \ll_{\gamma,\alpha} \frac{H n^\alpha}{H^3}
+        =
+        \frac{n^\alpha}{H^2}
+        =
+        o(1).
+\]
+For atoms of the shape \(ab=c^2\) with \(a\in\mathcal C_B\), write uniquely
+\[
+        a=rs^2
+\]
+with \(r\) squarefree.  Then every positive integer solution has
+\[
+        b=rt^2,
+        \qquad c=rst
+\]
+for some positive integer \(t\).  Since \(b\le n\), there are at most
+\(O(\sqrt n)\) possible \(t\).  Hence the number of such atoms involving
+\(X_B\) is \(O(H\sqrt n)\), and their total contribution is
+\[
+        \ll_\gamma \frac{H\sqrt n}{H^3}
+        =
+        \frac{\sqrt n}{H^2}
+        =
+        o(1).
+\]
+
+Combining the three estimates, the total probability of all atomic bad events
+involving any fixed variable is \(o(1)\).  Since every atomic event depends on
+at most four variables, this total is at most \(1/(8\cdot 4)\) for all
+sufficiently large \(n\).  Lemma~\ref{lem:variable-LLL} therefore applies and
+gives a choice avoiding all atomic bad events.  For this choice, the selected
+set \(C\) is multiplicative Sidon.
+\end{proof}
+
+\section{Counting prime-poor blocks}
+
+Fix \(0<\eps<1/10\) and set
+\[
+        \kappa:=\frac{10}{33}+\eps,
+        \qquad H:=\ceil{n^\kappa}.
+\]
+We shall eventually prove $g(n)\le 2H$ for all sufficiently large $n$.
+Choose a number $\theta$ with
+\[
+        \frac{10}{33}<\theta<\kappa<\frac12.
+\]
+For instance one may take $\theta=10/33+\eps/2$.
+Let
+\[
+        B_r:=\{(r-1)H+1,(r-1)H+2,\ldots,rH\},
+        \qquad 1\le r\le t:=\floor{n/H}.
+\]
+These are the full blocks of length $H$.
+
+Fix once and for all a large integer $R\ge100$.
+A block $B_r$ is called \emph{bad} if either
+\[
+        B_r\cap [1,2\sqrt n]\ne\varnothing
+\]
+or $B_r$ contains at most $R$ primes.  All other full blocks are called
+\emph{good}.  Thus every good block lies above $2\sqrt n$ and contains at least
+$R+1$ primes.
+
+\begin{lemma}[Number of bad blocks]
+\label{lem:bad-blocks}
+Let $M$ be the number of bad blocks.  Then
+\[
+M \ll \frac{\sqrt n}{H}+1+\frac{n^{10/11+o(1)}}{H}.
+\]
+In particular, if $H=n^{10/33+\eps+o(1)}$, then
+\[
+        \frac{M n^{o(1)}}{H^2}=o(1).
+\]
+\end{lemma}
+
+\begin{proof}
+There are $O(\sqrt n/H+1)$ bad blocks meeting $[1,2\sqrt n]$.  We now count the
+remaining bad blocks, which are disjoint from $[1,2\sqrt n]$.
+
+Let \(B=[u+1,u+H]\) be one of these remaining bad blocks.  Then
+\(u+1>2\sqrt n\), and \(B\) contains at most \(R\) primes.  Since
+\(\theta<\kappa\), we have \(n^\theta=o(H)\).  Hence, for all sufficiently
+large \(n\) and all
+\[
+        x\in [u+1,u+H/2],
+\]
+every integer \(m\) with
+\[
+        x<m\le x+x^\theta
+\]
+lies in \(B\).  Indeed, \(x+x^\theta\le u+H/2+n^\theta\le u+H\) for all large
+\(n\).  Therefore this short interval contains at most \(R\) primes.  By
+Lemma~\ref{lem:prime-powers}, the contribution of prime powers to
+\(\sum_{x<m\le x+x^\theta}\Lambda(m)\) is \(O((\log x)^2)\), while the
+contribution of primes is \(O_R(\log x)\).  Since \(x\ge u+1>2\sqrt n\), this
+gives
+\[
+        \sum_{x<m\le x+x^\theta}\Lambda(m)=o(x^\theta)
+\]
+uniformly for such \(x\).  In particular, for all large \(n\),
+\[
+\left|\sum_{x<m\le x+x^\theta}\Lambda(m)-x^\theta\right|
+        \ge \frac12 x^\theta.
+\]
+Thus each high bad block contributes a subinterval of \(x\)-values of measure
+\(\gg H\) to the exceptional set in Theorem~\ref{thm:GT-input}.  These
+subintervals are disjoint as \(B\) varies.
+
+For all sufficiently large \(n\), all these \(x\)-values are at least
+\(2\sqrt n\), so the dyadic intervals to which Theorem~\ref{thm:GT-input} is
+applied have lower endpoints tending to infinity.  Summing the exceptional-set
+estimate over dyadic intervals with \(X\le n\) gives total exceptional measure
+\[
+        \ll n^{10/11+o(1)}
+\]
+in \([1,n]\).  Hence the number of high bad blocks is
+\[
+        \ll \frac{n^{10/11+o(1)}}{H}.
+\]
+This proves the asserted bound for \(M\).
+
+Finally,
+\[
+        \frac{M n^{o(1)}}{H^2}
+        \ll
+        n^{1/2-3\kappa+o(1)}
+        +n^{-2\kappa+o(1)}
+        +n^{10/11-3\kappa+o(1)}
+        =o(1),
+\]
+because $\kappa>10/33>1/4$ and $10/11=3\cdot 10/33$.
+\end{proof}
+
+\section{Choosing primes in the good blocks}
+
+Let $\mathcal G$ be the set of good blocks and $\mathcal B$ the set of bad
+blocks.  From each good block $G\in\mathcal G$, choose a set $P_G$ of exactly
+$R$ primes contained in $G$.  Every such prime is larger than $2\sqrt n$.
+We choose one prime $q_G\in P_G$ independently and uniformly at random.
+
+\begin{lemma}[A good choice of the good-block primes]
+\label{lem:choose-good-primes}
+There is a choice of primes
+\[
+        Q:=\{q_G:G\in\mathcal G\}
+\]
+such that for every bad block $B\in\mathcal B$, at least $H/2$ integers in $B$
+are not divisible by any prime in $Q$.
+\end{lemma}
+
+\begin{proof}
+Fix a bad block $B$.  For a good block $G$, let $Y_G(B)$ be the indicator of
+the event that the randomly chosen prime $q_G$ divides at least one integer of
+$B$.  The variables $Y_G(B)$ are independent as $G$ varies.  Since every
+$q_G>2\sqrt n$ and every integer $a\le n$ is divisible by at most one prime
+larger than $\sqrt n$, the total number of pairs
+\[
+        (a,q),\qquad a\in B,\quad q\in\bigcup_{G\in\mathcal G}P_G,\quad q\mid a,
+\]
+is at most $H$.  Consequently
+\[
+        \mathbb E\sum_{G\in\mathcal G}Y_G(B) \le \frac{H}{R}.
+\]
+Let
+\[
+        S_B:=\sum_{G\in\mathcal G}Y_G(B),
+        \qquad
+        \mu_B:=\mathbb E S_B\le \frac{H}{R}.
+\]
+By the standard Chernoff bound for sums of independent Bernoulli variables,
+\[
+        \mathbb P\left(S_B>\frac H2\right)
+        \le
+        \left(\frac{e\mu_B}{H/2}\right)^{H/2}
+        \le
+        \left(\frac{2e}{R}\right)^{H/2}
+        \le \exp(-cH),
+\]
+with an absolute constant \(c>0\), since \(R\ge100\). Since $H=o(\sqrt n)$ in the applications
+below, every chosen prime $q_G>2\sqrt n$ is larger than $H$.  Hence such a prime
+divides at most one integer in any fixed block of length $H$.  Consequently, for
+a fixed bad block $B$, the number of integers in $B$ divisible by at least one
+chosen prime is at most
+\[
+        \sum_{G\in\mathcal G}Y_G(B).
+\]
+There are at most $n/H$ bad blocks, and $H\to\infty$ polynomially.  Hence the
+union bound shows that, with positive probability, every bad block contains at
+most $H/2$ integers divisible by the chosen primes.  This gives the desired
+deterministic choice of $Q$.
+\end{proof}
+
+Fix such a choice of $Q$.  For every bad block $B$, define
+\[
+        \mathcal C_B:=\{a\in B:q\nmid a\text{ for every }q\in Q\}.
+\]
+By Lemma~\ref{lem:choose-good-primes},
+\[
+        |\mathcal C_B|\ge H/2
+        \qquad (B\in\mathcal B).
+\]
+
+\section{Completion of the proof}
+
+\begin{theorem}
+\label{thm:main}
+For every $\eps>0$,
+\[
+        g(n)\ll_\eps n^{10/33+\eps}.
+\]
+Equivalently,
+\[
+        g(n)\le n^{10/33+o(1)}.
+\]
+\end{theorem}
+
+\begin{proof}
+It is enough to prove the result for all sufficiently large $n$, since the
+implicit constant may be enlarged to handle finitely many exceptional values.
+We may also suppose $0<\eps<1/10$.  Put
+\[
+        \kappa=\frac{10}{33}+\eps,
+        \qquad H=\ceil{n^\kappa}.
+\]
+Use the block decomposition above.
+
+By Lemma~\ref{lem:bad-blocks}, if \(M\) denotes the number of bad blocks, then
+\[
+        M \ll \frac{\sqrt n}{H}+1+\frac{n^{10/11+o(1)}}{H}.
+\]
+Take \(\alpha:=\eps\).  Since \(H=n^{\kappa+o(1)}\), we have
+\[
+\begin{aligned}
+        \frac{M n^\alpha}{H^2}
+        &\ll
+        n^{1/2+\alpha-3\kappa+o(1)}
+        +
+        n^{\alpha-2\kappa+o(1)}
+        +
+        n^{10/11+\alpha-3\kappa+o(1)}        \\
+        &=o(1),
+\end{aligned}
+\]
+because \(\kappa=10/33+\eps\), \(\alpha=\eps\), and \(\kappa>10/33>1/4\). Also
+\[
+        \frac{n^\alpha}{H^2}
+        =
+        n^{\alpha-2\kappa+o(1)}
+        =
+        o(1),
+\]
+and
+\[
+        \frac{\sqrt n}{H^2}
+        =
+        n^{1/2-2\kappa+o(1)}
+        =
+        o(1),
+\]
+because \(\kappa>10/33>1/4\).  Therefore Lemma~\ref{lem:sparse-transversal},
+applied with \(\gamma=1/2\), gives a choice
+\[
+        c_B\in\mathcal C_B \qquad (B\in\mathcal B)
+\]
+such that
+\[
+        C:=\{c_B:B\in\mathcal B\}
+\]
+is multiplicative Sidon.
+
+Now define
+\[
+        A:=Q\cup C.
+\]
+Every good block is met by $Q$, and every bad block is met by $C$.  Hence
+$A$ meets every full block $B_r$, $1\le r\le t$.
+
+We next check that $A$ is multiplicative Sidon.  Suppose
+\[
+        a_1a_2=a_3a_4,
+        \qquad a_i\in A.
+\]
+For each $q\in Q$, compare the $q$-adic valuations of the two sides.  The primes
+in $Q$ are distinct, and no element of $C$ is divisible by any prime in $Q$ by
+construction.  Hence the multiplicity with which $q$ occurs among
+$\{a_1,a_2\}$ is equal to the multiplicity with which it occurs among
+$\{a_3,a_4\}$.  Therefore the multiset of $Q$-elements appearing on the left is
+the same as the multiset of $Q$-elements appearing on the right.  Cancelling this common multiset, we are left with an equality involving only
+elements of \(C\), with the same number of remaining factors on the two sides.
+Thus the remaining equality is either \(1=1\), an equality of single
+\(C\)-elements, or a product equality between two \(C\)-elements on each side.
+In the first two cases it is plainly trivial, and in the last case it is
+trivial because \(C\) is multiplicative Sidon.  Thus the original equality is
+also trivial, and \(A\) is multiplicative Sidon.
+
+It remains to convert block coverage into interval coverage.  Let
+$[x,x+2H]\subseteq[1,n]$.  Put
+\[
+        r:=\floor{\frac{x-1}{H}}+2.
+\]
+Then
+\[
+        x < (r-1)H+1\le rH < x+2H.
+\]
+Since \(x+2H\le n\), this gives \(rH\le n\), and hence
+\[
+        r\le \floor{n/H}=t.
+\]
+Therefore the full block \(B_r\) is contained in \([x,x+2H]\), and hence this
+interval meets \(A\).
+
+Thus every interval of length $2H$ contained in $[1,n]$ meets the multiplicative
+Sidon set $A$.  Consequently
+\[
+        g(n)\le 2H\ll n^\kappa=n^{10/33+\eps}.
+\]
+This proves the theorem.
+\end{proof}
+
+\begin{remark}
+The exponent $10/33$ enters only through the exceptional-set estimate
+$\mu(\theta)\le10/11$ for $\theta>10/33$.  The local-lemma filling step requires
+roughly $M\ll H^2$, and the exceptional-set estimate gives
+$M\ll n^{10/11+o(1)}/H$.  Thus one needs
+\[
+        \frac{n^{10/11+o(1)}}{H^3}=o(1),
+\]
+which is exactly $H\gg n^{10/33+o(1)}$.
+\end{remark}
+
+
+
+
+
+\section{Conditional improvement under the Riemann hypothesis}
+
+The same argument gives a sharper conditional estimate.
+
+\begin{theorem}
+\label{thm:RH-main}
+Assume the Riemann hypothesis.  Then, for every $\eps>0$,
+\[
+        g(n)\ll_\eps n^{1/4+\eps}.
+\]
+\end{theorem}
+
+\begin{proof}
+It is enough to prove the result for all sufficiently large $n$, and we may
+suppose $0<\eps<1/10$.  Put
+\[
+        \kappa:=\frac14+\eps,
+        \qquad H:=\ceil{n^\kappa},
+\]
+and choose
+\[
+        \theta:=\frac14+\frac{\eps}{2}.
+\]
+Then
+\[
+        0<\theta<\kappa<\frac12.
+\]
+
+As before, decompose $[1,n]$ into full blocks
+\[
+        B_r:=\{(r-1)H+1,(r-1)H+2,\ldots,rH\},
+        \qquad 1\le r\le t:=\floor{n/H}.
+\]
+Fix a sufficiently large integer $R$, and call a block bad if it either meets
+$[1,2\sqrt n]$ or contains at most $R$ primes.  All other full blocks are called
+good.
+
+We first count the bad blocks.  The number of bad blocks meeting
+$[1,2\sqrt n]$ is
+\[
+        O\left(\frac{\sqrt n}{H}+1\right).
+\]
+Now let \(B=[u+1,u+H]\) be a bad block disjoint from \([1,2\sqrt n]\).
+Then \(u+1>2\sqrt n\), and \(B\) contains at most \(R\) primes.  Since
+\(\theta<\kappa\), we have \(n^\theta=o(H)\).  Hence, for all sufficiently
+large \(n\) and all
+\[
+        x\in [u+1,u+H/2],
+\]
+every integer \(m\) with
+\[
+        x<m\le x+x^\theta
+\]
+lies in \(B\).  Therefore this short interval contains at most \(R\) primes.
+By Lemma~\ref{lem:prime-powers}, the contribution of prime powers to
+\[
+        \sum_{x<m\le x+x^\theta}\Lambda(m)
+\]
+is \(O((\log x)^2)\), while the contribution of primes is \(O_R(\log x)\).
+Since \(x\ge u+1>2\sqrt n\), we get
+\[
+        \sum_{x<m\le x+x^\theta}\Lambda(m)=o(x^\theta)
+\]
+uniformly for such \(x\).  Therefore each high bad block contributes a set of
+\(x\)-values of measure \(\gg H\) to the exceptional set in
+Theorem~\ref{thm:GT-RH-input}.  These sets are disjoint as the block varies.
+
+For all sufficiently large \(n\), the relevant \(x\)-values are at least
+\(2\sqrt n\), so the lower endpoints in the dyadic decomposition tend to
+infinity.  Summing Theorem~\ref{thm:GT-RH-input} over dyadic intervals gives
+total exceptional measure
+\[
+        \ll n^{1-\theta+o(1)}
+\]
+in \([1,n]\).  Hence, if \(M\) denotes the number of bad blocks, then
+\[
+        M\ll \frac{\sqrt n}{H}+1+\frac{n^{1-\theta+o(1)}}{H}.
+\]
+Taking \(\alpha:=\eps\), the above bound for \(M\) gives
+\[
+\begin{aligned}
+        \frac{M n^\alpha}{H^2}
+        &\ll
+        n^{1/2+\alpha-3\kappa+o(1)}
+        +
+        n^{1-\theta+\alpha-3\kappa+o(1)}      \\
+        &=o(1),
+\end{aligned}
+\]
+because
+\[
+        3\kappa=\frac34+3\eps,
+        \qquad
+        1-\theta=\frac34-\frac{\eps}{2},
+        \qquad
+        \alpha=\eps.
+\]
+Also
+\[
+        \frac{n^\alpha}{H^2}
+        =
+        n^{\alpha-2\kappa+o(1)}
+        =
+        o(1),
+\]
+and
+\[
+        \frac{\sqrt n}{H^2}
+        =
+        n^{1/2-2\kappa+o(1)}
+        =
+        n^{-2\eps+o(1)}
+        =
+        o(1).
+\]
+
+Choose primes in the good blocks exactly as in
+Lemma~\ref{lem:choose-good-primes}.  The same proof applies here, since
+$H=o(\sqrt n)$ and every selected good-block prime is larger than $2\sqrt n$.
+Thus we obtain a set $Q$ of one prime from each good block such that, for every
+bad block $B$, the set
+\[
+        \mathcal C_B:=\{a\in B:q\nmid a\text{ for every }q\in Q\}
+\]
+satisfies
+\[
+        |\mathcal C_B|\ge H/2.
+\]
+By Lemma~\ref{lem:sparse-transversal}, we may choose one element
+$c_B\in\mathcal C_B$ from each bad block so that
+\[
+        C:=\{c_B:B\text{ bad}\}
+\]
+is multiplicative Sidon.
+
+Set
+\[
+        A:=Q\cup C.
+\]
+Then $A$ meets every full block.  The same valuation argument used in the proof
+of Theorem~\ref{thm:main} shows that $A$ is multiplicative Sidon.  Finally, the
+same block-covering argument gives that every interval of length $2H$ contained
+in $[1,n]$ contains one full block and hence meets $A$.  Therefore
+\[
+        g(n)\le 2H\ll n^{1/4+\eps},
+\]
+as claimed.
+\end{proof}
+
+\begin{remark}
+The exponent $1/4$ is the natural endpoint of the present filling step.  Indeed,
+even if the exceptional-set estimate were stronger, Lemma~\ref{lem:sparse-transversal}
+still requires
+\[
+        \frac{\sqrt n}{H^2}=o(1),
+\]
+which comes from square-type product coincidences of the form $ab=c^2$.
+Thus this version of the argument cannot by itself go below
+$n^{1/4+o(1)}$.
+\end{remark}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{thebibliography}{99}
+
+\bibitem{AlonSpencer}
+N.~Alon and J.~H.~Spencer,
+\emph{The Probabilistic Method},
+4th edition, Wiley, 2016.
+
+\bibitem{BakerHarmanPintz2001}
+R.~C. Baker, G.~Harman and J.~Pintz,
+\emph{The difference between consecutive primes, II},
+Proc. London Math. Soc. (3) \textbf{83} (2001), no.~3, 532--562.
+
+
+\bibitem{DMT2026}
+W.~van Doorn, P.~Monticone and Q.~Tang,
+\emph{Gaps in Multiplicative Sidon Sets},
+arXiv:2605.02064, 2026.
+\url{https://arxiv.org/abs/2605.02064}
+
+\bibitem{Erdos1938}
+P.~Erd\H{o}s,
+\emph{On sequences of integers no one of which divides the product of two others
+and on some related problems},
+Mitt. Forsch.-Inst. Math. Mech. Univ. Tomsk \textbf{2} (1938), 74--82.
+
+\bibitem{Erdos1968}
+P.~Erd\H{o}s,
+\emph{On some applications of graph theory to number theoretic problems},
+Publ. Ramanujan Inst. No.~1 (1968), 131--136.
+
+\bibitem{GafniTao2025}
+A.~Gafni and T.~Tao,
+\emph{On the number of exceptional intervals to the prime number theorem in short intervals},
+arXiv:2505.24017, 2025.
+\url{https://arxiv.org/abs/2505.24017}
+
+\bibitem{Sarkozy2001}
+A.~S\'ark\"ozy,
+\emph{Unsolved Problems in Number Theory},
+Period. Math. Hungar. \textbf{42} (2001), no.~1--2, 17--35.
+
+\end{thebibliography}
+
+\end{document}
