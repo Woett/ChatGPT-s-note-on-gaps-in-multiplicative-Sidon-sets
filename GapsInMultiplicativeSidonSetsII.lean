@@ -15,8 +15,10 @@ In order to state a more general theorem that is formalized here, let us write
 set of `x ∈ [0, n]` such that `(x, x + x^α]` contains fewer than `5^{1/α}`
 primes is less than `n^{ℓ+ρ}`, for all sufficiently large `n`. We then show that
 if `Adm(α, ℓ)` holds for some `ℓ < 3α`, then `gapMulSidon n = O(n^α)`. For more
-details, see the paper "Gaps in multiplicative Sidon sets II" by Quanyu Tang and
-I, which was based on an initial write-up by GPT 5.5-Pro.
+details, see the paper Quanyu Tang and I wrote, which was based on an initial 
+write-up by GPT 5.5-Pro.
+
+W. van Doorn, and Q. Tang, Gaps in Multiplicative Sidon Sets II. arXiv:2606.07428 (2026).
 
 The formalization below was obtained by Aristotle from Harmonic
 (aristotle-harmonic@harmonic.fun).
